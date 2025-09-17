@@ -5,13 +5,17 @@ from bot.configs.db_pool import create_pool
 from bot.configs.databases import postgresql, r
 from bot.databases.init import init_db
 from bot.handlers.all import register_all_handlers
-from bot.configs.bot import dp
+from bot.configs.bot import dp, bot
+from bot.configs.commands import botcommands
 
 async def on_startup(dp):
     logger.info("Бот запускается...")
 
     register_all_handlers(dp)
     logger.info("Хендлеры зарегистрированы.")
+
+    await bot.set_my_commands(botcommands)
+    logger.info("Команды зарегистрированы.")
 
     # 🔁 Создание пула
     await create_pool(

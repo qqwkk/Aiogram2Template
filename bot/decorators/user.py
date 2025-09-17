@@ -4,7 +4,7 @@ from datetime import datetime
 from aiogram.types import Message, CallbackQuery
 from loguru import logger
 
-def admin_required(func):
+def user_required(func):
     @wraps(func)
     async def wrapper(message: Message, *args, **kwargs):
         user_id = message.from_user.id

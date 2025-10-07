@@ -1,6 +1,10 @@
+from typing import Union
 from aiogram.types import Message, CallbackQuery
 from aiogram.dispatcher.storage import FSMContext
 from pprint import pformat
+
+from bot.other.sysinfo import _fmt_info, get_system_info
+from bot.untils import _chunk, _get_sender
 
 class DevFunctions:
     @staticmethod
@@ -44,3 +48,41 @@ class DevFunctions:
         )
 
         await message_or_callback.answer(debug_info, parse_mode="HTML")
+
+    @staticmethod
+    async def system_info(message_or_callback: Union[Message, CallbackQuery], include_processes: bool = True):
+        """
+        («асинхронная») Выводит красиво отформатированную системную информацию,
+        используя уже существующую у тебя get_system_info().
+        """
+        try:
+            msg = _get_sender(message_or_callback)
+
+            # Сбор данных
+            info = get_system_info(include_processes=include_processes)
+
+            # Красивое форматирование
+            html = _fmt_info(info)
+
+            # Отправка с разбиением
+            chunks = _chunk(html)
+            for part in chunks:
+                await msg.answer(part, parse_mode="HTML")
+
+        except Exception:
+            # Сообщение пользователю строго по твоим правилам
+            if isinstance(message_or_callback, CallbackQuery):
+                try:
+                    await message_or_callback.answer(
+                        "возникла ошибка, администратор постарается решить вашу проблему как можно быстрее",
+                        show_alert=True
+                    )
+                except Exception:
+                    pass
+            else:
+                try:
+                    await message_or_callback.answer(
+                        "возникла ошибка, администратор постарается решить вашу проблему как можно быстрее"
+                    )
+                except Exception:
+                    pass

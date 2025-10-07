@@ -9,3 +9,4 @@ def register_handlers(dp: Dispatcher):
     dp.register_message_handler(admin_required(DevFunctions.get_message_id), commands=['message_id'], state='*')
 
     dp.register_message_handler(admin_required(DevFunctions.debug), commands=['debug'], state='*')
+    dp.register_message_handler(admin_required(DevFunctions.system_info), commands=['sysinfo'], state='*')

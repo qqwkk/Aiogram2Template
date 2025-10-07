@@ -11,12 +11,6 @@ from bot.configs.commands import botcommands
 async def on_startup(dp):
     logger.info("Бот запускается...")
 
-    register_all_handlers(dp)
-    logger.info("Хендлеры зарегистрированы.")
-
-    await bot.set_my_commands(botcommands)
-    logger.info("Команды зарегистрированы.")
-
     # 🔁 Создание пула
     await create_pool(
         user=postgresql.user,
@@ -33,6 +27,12 @@ async def on_startup(dp):
     except Exception:
         logger.error("Ошибка при инициализации базы данных:")
         raise
+
+    register_all_handlers(dp)
+    logger.info("Хендлеры зарегистрированы.")
+
+    await bot.set_my_commands(botcommands)
+    logger.info("Команды зарегистрированы.")
     
 async def on_shutdown(dp):
     logger.info("🛑 Бот останавливается...")
